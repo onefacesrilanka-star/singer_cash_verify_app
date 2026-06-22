@@ -4,27 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Singer Daily Cash Verification</title>
-
-    <!-- 🟢 Browser Tab Icon (Favicon) 🟢 -->
-    <link rel="icon" href="https://i.ibb.co/FqzJLZ85/20260527-170407.png" type="image/png">
-    <link rel="apple-touch-icon" href="https://i.ibb.co/FqzJLZ85/20260527-170407.png">
-
-    <!-- 🟢 WhatsApp & Social Media Preview (Open Graph) 🟢 -->
-    <meta property="og:title" content="Singer Daily Cash Verification">
-    <meta property="og:description" content="Daily Cash Verification App by ONE FACE">
-    <meta property="og:image" content="https://i.ibb.co/FqzJLZ85/20260527-170407.png">
-    <meta property="og:type" content="website">
-
-    <!-- 🟢 Web App / Add to Home Screen Setup (PWA) 🟢 -->
-    <meta name="theme-color" content="#d32f2f">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="manifest" id="manifest-link">
-
     <!-- PDF ලබා ගැනීමට html2pdf යළි එකතු කර ඇත -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
     <style>
         body { 
             margin: 0; 
@@ -39,41 +20,54 @@
             -ms-user-select: none;
             user-select: none;
         }
+
         * { box-sizing: border-box; }
         input, textarea { -webkit-user-select: auto; -ms-user-select: auto; user-select: auto; touch-action: manipulation; }
+
         .header { background: #d32f2f; color: white; padding: 15px; text-align: center; font-size: 20px; font-weight: bold; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         .sub-header { font-size: 12px; font-weight: normal; opacity: 0.9; }
+
         #loginScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .login-box { background: #f9f9f9; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 80%; max-width: 350px; text-align: center; }
         .login-box input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; min-width: 0; }
         .login-btn { background: #d32f2f; color: white; border: none; padding: 12px; width: 100%; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .login-footer { position: absolute; bottom: 20px; font-size: 10px; color: #888; text-align: center; width: 100%; line-height: 1.5; }
+
         .nav-tabs { display: flex; background: white; border-bottom: 2px solid #ddd; width: 100%; }
         .nav-tab { flex: 1; text-align: center; padding: 12px; font-weight: bold; cursor: pointer; color: #666; }
         .nav-tab.active { color: #d32f2f; border-bottom: 3px solid #d32f2f; }
+
         .view { display: none; padding: 15px; width: 100%; padding-bottom: 50px; }
         .view.active { display: block; }
+
         .section { background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); width: 100%; overflow: hidden; }
         .section-title { font-size: 16px; font-weight: bold; color: #d32f2f; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        
         .input-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; width: 100%; }
         .input-row label { font-size: 14px; font-weight: bold; flex: 1; white-space: nowrap; }
         .input-row input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; text-align: right; font-size: 14px; min-width: 0; width: 100%; }
         .input-row span { margin: 0 10px; font-weight: bold; }
         .input-row .val-box { flex: 1; text-align: right; font-weight: bold; color: #0f5132; background: #f0fdf4; padding: 8px; border-radius: 4px; min-width: 0; white-space: nowrap; }
+
         #loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 3000; justify-content: center; align-items: center; flex-direction: column; }
         .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #d32f2f; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
         .btn-submit { background: #0f5132; color: white; width: 100%; padding: 15px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; margin-top: 10px; cursor: pointer; }
+        
         .record-card { background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #d32f2f; width: 100%; cursor: pointer; }
         .app-footer { text-align: center; font-size: 11px; color: #777; margin: 30px 0 10px 0; line-height: 1.4; border-top: 1px dashed #ccc; padding-top: 15px; width: 100%; }
+
         /* Modal Styles */
         #reportModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 4000; overflow-y: auto; padding: 20px; box-sizing: border-box; }
         .modal-content { background: #fff; padding: 25px; border-radius: 8px; max-width: 500px; margin: 20px auto; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .close-btn { position: absolute; right: 15px; top: 10px; font-size: 30px; cursor: pointer; color: #d32f2f; font-weight: bold; }
+        
         .action-buttons { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
     </style>
 </head>
 <body>
+
     <div id="loginScreen">
         <div class="login-box">
             <h2 style="color: #d32f2f; margin-top:0;">SINGER</h2>
@@ -86,26 +80,27 @@
             SYSTEM BY ONE FACE CRATIVE CRAITION<br>076 030 8163
         </div>
     </div>
-    
+
     <div class="header">
         SINGER <br>
         <div class="sub-header" id="headerUser">Location: Kamburupitiya</div>
     </div>
-    
+
     <div class="nav-tabs">
         <div class="nav-tab active" id="tab-form" onclick="switchTab('form')">📝 අලුත් වාර්තාව</div>
         <div class="nav-tab" id="tab-history" onclick="switchTab('history'); loadHistory();">📂 පරණ වාර්තා</div>
     </div>
-    
+
     <div id="loader"><div class="spinner"></div><p style="font-weight:bold; margin-top:10px;" id="loaderText">කරුණාකර රැඳී සිටින්න...</p></div>
-    
+
     <div id="view-form" class="view active">
+        
         <div class="section">
             <div class="input-row"><label>Date (දිනය)</label><input type="date" id="f-date"></div>
             <div class="input-row"><label>Location</label><input type="text" id="f-location" value="Kamburupitiya"></div>
             <div class="input-row"><label>Open Account (රු.)</label><input type="text" inputmode="decimal" class="num-input" id="f-openAcc" oninput="formatInput(this); calcAll()" placeholder="e.g. 300,248"></div>
         </div>
-        
+
         <div class="section">
             <div class="section-title">💵 Cash on Hand (මුදල් නෝට්ටු)</div>
             <div class="input-row"><label>5000</label><span>x</span><input type="text" inputmode="decimal" class="num-input" id="c5000" oninput="formatInput(this); calcAll()"><div class="val-box" id="t5000">0</div></div>
@@ -118,12 +113,12 @@
             <div class="input-row"><label>Coins (කාසි)</label><span>+</span><input type="text" inputmode="decimal" class="num-input" id="cCoins" oninput="formatInput(this); calcAll()"><div class="val-box" id="tCoins">0</div></div>
             <div class="input-row" style="margin-top:15px; border-top:2px solid #ccc; padding-top:10px;"><label style="color:#d32f2f;">Total Cash (C/Total)</label><div class="val-box" id="totalCashBox" style="font-size:16px;">Rs. 0</div></div>
         </div>
-        
+
         <div class="section" style="background:#fff5f5; border: 1px dashed #d32f2f;">
             <div class="input-row" style="margin:0;"><label style="color:#d32f2f;">Cash Account Difference</label><div class="val-box" id="cashDiffBox" style="font-size:16px; background:none;">Rs. 0</div></div>
             <p style="font-size:10px; color:#666; margin:3px 0 0 0; text-align:right;">(Total Cash - Open Account)</p>
         </div>
-        
+
         <div class="section">
             <div class="section-title">💳 Other Payment Methods</div>
             <div class="input-row"><label>Bank Slip</label><input type="text" inputmode="decimal" class="num-input" id="o-bank" oninput="formatInput(this); calcAll()"></div>
@@ -132,7 +127,7 @@
             <div class="input-row"><label>FS 86 Credits / Vouchers</label><input type="text" inputmode="decimal" class="num-input" id="o-other" oninput="formatInput(this); calcAll()"></div>
             <div class="input-row" style="margin-top:15px; border-top:2px solid #ccc; padding-top:10px;"><label style="color:#d32f2f;">Total Other Payments</label><div class="val-box" id="totalPayBox" style="font-size:16px;">Rs. 0</div></div>
         </div>
-        
+
         <div class="section">
             <div class="section-title">📉 Expenses (වියදම් කොටු 10)</div>
             <div class="input-row"><input type="text" id="ex-r1" placeholder="Reason 1" style="flex:1.5; margin-right:5px; text-align:left;"><input type="text" inputmode="decimal" class="num-input" id="ex-a1" oninput="formatInput(this); calcAll()" placeholder="Amount"></div>
@@ -147,11 +142,11 @@
             <div class="input-row"><input type="text" id="ex-r10" placeholder="Reason 10" style="flex:1.5; margin-right:5px; text-align:left;"><input type="text" inputmode="decimal" class="num-input" id="ex-a10" oninput="formatInput(this); calcAll()" placeholder="Amount"></div>
             <div class="input-row" style="margin-top:15px; border-top:2px solid #ccc; padding-top:10px;"><label style="color:#d32f2f; font-weight:bold;">Total Expenses</label><div class="val-box" id="totalExpBox" style="font-size:16px;">Rs. 0</div></div>
         </div>
-        
+
         <div class="section" style="background:#e3f2fd; border: 2px solid #1976d2;">
             <div class="input-row" style="margin:0;"><label style="font-size:18px; font-weight:bold;" id="netLabel">Net Shortage/Excess</label><div class="val-box" id="netBalanceBox" style="font-size:22px; color:#1976d2; background:none;">Rs. 0</div></div>
         </div>
-        
+
         <button class="btn-submit" onclick="submitData()">☁️ Cloud එකට Save කරන්න</button>
         <button class="btn-submit" style="background:#1976d2; margin-top:8px;" onclick="printForm()">📄 View Report / Save PDF</button>
         
@@ -159,7 +154,7 @@
             All rights received by ONE FACE crative caration- Hasitha 2020-2026
         </div>
     </div>
-    
+
     <div id="view-history" class="view">
         <h3 style="color:#d32f2f; margin-top:0;">Save කරපු වාර්තා (Click to view)</h3>
         <div id="historyContainer"></div>
@@ -167,7 +162,7 @@
             All rights received by ONE FACE crative caration - Hasitha 2020-2026
         </div>
     </div>
-    
+
     <!-- Modal for Print Preview / History Details -->
     <div id="reportModal">
         <div class="modal-content">
@@ -185,31 +180,16 @@
             </p>
         </div>
     </div>
-    
-    <script>
-        // 🟢 Dynamic PWA Manifest Injection (Add to Home Screen Setup) 🟢
-        const manifestData = {
-            "name": "Singer Cash App",
-            "short_name": "Singer Cash",
-            "start_url": ".",
-            "display": "standalone",
-            "background_color": "#f4f6f9",
-            "theme_color": "#d32f2f",
-            "icons": [
-                { "src": "https://i.ibb.co/FqzJLZ85/20260527-170407.png", "sizes": "192x192", "type": "image/png" },
-                { "src": "https://i.ibb.co/FqzJLZ85/20260527-170407.png", "sizes": "512x512", "type": "image/png" }
-            ]
-        };
-        const manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/json' });
-        document.getElementById('manifest-link').href = URL.createObjectURL(manifestBlob);
 
+    <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzX5tyg_nNBS3NtEU-v3zeJAUZcRVacD3nfDk1a68vTjq5uBJu39BoFP5ops8ZhOFzR/exec"; 
+
         let currentUser = ""; let isAdmin = false;
         let globalHistoryData = []; 
         let currentReportDate = "";
-        
+
         document.getElementById('f-date').valueAsDate = new Date();
-        
+
         function login() {
             let name = document.getElementById('userName').value.trim();
             let pin = document.getElementById('userPin').value.trim();
@@ -218,13 +198,13 @@
             document.getElementById('headerUser').innerText = `Location: Kamburupitiya | User: ${currentUser} ${isAdmin ? '(Admin)' : ''}`;
             document.getElementById('loginScreen').style.display = "none";
         }
-        
+
         function switchTab(tab) {
             document.getElementById('view-form').classList.remove('active'); document.getElementById('view-history').classList.remove('active');
             document.getElementById('tab-form').classList.remove('active'); document.getElementById('tab-history').classList.remove('active');
             document.getElementById('view-' + tab).classList.add('active'); document.getElementById('tab-' + tab).classList.add('active');
         }
-        
+
         function formatInput(input) {
             let rawValue = input.value.replace(/[^0-9.]/g, '');
             if(rawValue === "") { input.value = ""; return; }
@@ -233,17 +213,17 @@
             if(intPart !== "") { intPart = parseInt(intPart, 10).toLocaleString('en-US'); }
             if(parts.length > 1) { input.value = intPart + '.' + parts[1]; } else { input.value = intPart; }
         }
-        
+
         function getVal(id) { 
             let el = document.getElementById(id); if(!el) return 0;
             let valStr = el.value.replace(/,/g, ''); let num = parseFloat(valStr); return isNaN(num) ? 0 : num;
         }
-        
+
         function formatNum(num) {
             let val = Number(num); if(isNaN(val)) return "0.00";
             return val.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
         }
-        
+
         function calcAll() {
             let c5000 = getVal('c5000')*5000; document.getElementById('t5000').innerText = c5000.toLocaleString();
             let c1000 = getVal('c1000')*1000; document.getElementById('t1000').innerText = c1000.toLocaleString();
@@ -256,40 +236,40 @@
             
             let totalCash = c5000 + c1000 + c500 + c100 + c50 + c20 + c10 + coins;
             document.getElementById('totalCashBox').innerText = "Rs. " + totalCash.toLocaleString();
-            
+
             let openAcc = getVal('f-openAcc'); let cashDiff = totalCash - openAcc;
             let diffBox = document.getElementById('cashDiffBox');
             diffBox.innerText = "Rs. " + cashDiff.toLocaleString();
             diffBox.style.color = cashDiff < 0 ? "#d32f2f" : "#0f5132";
-            
+
             let totalPayments = getVal('o-bank') + getVal('o-adv') + getVal('o-cards') + getVal('o-other');
             document.getElementById('totalPayBox').innerText = "Rs. " + totalPayments.toLocaleString();
-            
+
             let totalExpenses = 0; for(let i = 1; i <= 10; i++) { totalExpenses += getVal('ex-a' + i); }
             document.getElementById('totalExpBox').innerText = "Rs. " + totalExpenses.toLocaleString();
-            
+
             let netBalance = (cashDiff + totalPayments) + totalExpenses;
             let netBox = document.getElementById('netBalanceBox'); let labelBox = document.getElementById('netLabel');
-            
+
             if (netBalance < 0) {
                 labelBox.innerText = "Net Shortage (අඩු මුදල)"; netBox.innerText = "Rs. " + Math.abs(netBalance).toLocaleString(); netBox.style.color = "#d32f2f";
             } else {
                 labelBox.innerText = "Net Excess (වැඩිපුර මුදල)"; netBox.innerText = "Rs. " + netBalance.toLocaleString(); netBox.style.color = "#0f5132";
             }
         }
-        
+
         function printForm() {
             let date = document.getElementById('f-date').value; currentReportDate = date; 
             let location = document.getElementById('f-location').value; let openAcc = getVal('f-openAcc');
             let cashDiff = (getVal('c5000')*5000 + getVal('c1000')*1000 + getVal('c500')*500 + getVal('c100')*100 + getVal('c50')*50 + getVal('c20')*20 + getVal('c10')*10 + getVal('cCoins')) - openAcc;
             let netText = document.getElementById('netBalanceBox').innerText; let netLabelText = document.getElementById('netLabel').innerText;
-            
+
             let expRowsHtml = "";
             for(let i=1; i<=10; i++) {
                 let r = document.getElementById('ex-r' + i).value || ""; let a = document.getElementById('ex-a' + i).value ? "Rs. " + getVal('ex-a' + i).toLocaleString() : "";
                 if(r || a) { expRowsHtml += `<tr><td style="border:1px solid #000; padding:5px; text-align:left;">${r}</td><td style="border:1px solid #000; padding:5px; text-align:right;">${a}</td></tr>`; }
             }
-            
+
             let htmlContent = `
                 <div style="font-family: 'Courier New', monospace; font-size: 14px; color:#000; background: #fff; padding: 5px;">
                     <div style="text-align:right; font-weight:bold; font-size:22px; margin:0; letter-spacing:2px;">SINGER</div>
@@ -327,24 +307,29 @@
             document.getElementById('reportContent').innerHTML = htmlContent;
             document.getElementById('reportModal').style.display = 'block';
         }
-        
-        // 🚀 Blob URL Download Approach for WebViews
+
+  // 🚀 Blob URL Download Approach for WebViews (Fixed Blank Page Issue)
         function downloadPDF() {
             document.getElementById('loaderText').innerText = "PDF සකස් කරමින් පවතී...";
             document.getElementById('loader').style.display = 'flex';
             
-            const htmlString = document.getElementById('reportContent').innerHTML;
+            // 1. HTML String එකක් වෙනුවට කෙළින්ම Element එක ගන්නවා
+            const element = document.getElementById('reportContent');
             let dynamicFileName = 'Singer_Cash_Report_' + currentReportDate + '.pdf';
             
+            // 2. Blank Page එක එන එක නවත්වන්න Scroll එක බිංදුවට ගෙනියනවා
+            window.scrollTo(0, 0);
+            
             const opt = {
-                margin:       12,
+                margin:       10,
                 filename:     dynamicFileName,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+                // 3. scrollY: 0 එකතු කරලා තියෙන්නේ
+                html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#ffffff', scrollY: 0 },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
             
-            html2pdf().set(opt).from(htmlString).outputPdf('blob').then(function(pdfBlob) {
+            html2pdf().set(opt).from(element).outputPdf('blob').then(function(pdfBlob) {
                 const blobUrl = URL.createObjectURL(pdfBlob);
                 const link = document.createElement('a');
                 link.href = blobUrl;
@@ -358,11 +343,11 @@
                 document.getElementById('loader').style.display = 'none';
                 alert("PDF එක සාර්ථකව Download විය! කරුණාකර ෆෝන් එකේ Downloads Folder එක පරීක්ෂා කරන්න.");
             }).catch(e => {
+                console.error(e);
                 document.getElementById('loader').style.display = 'none';
                 alert("Download Error: කරුණාකර ඇප් එකට Storage Permission ලබා දී ඇතිදැයි පරීක්ෂා කරන්න.");
             });
         }
-        
         async function submitData() {
             if(!confirm("වාර්තාව Cloud එකට Save කරන්නද?")) return;
             document.getElementById('loaderText').innerText = "කරුණාකර රැඳී සිටින්න...";
@@ -374,12 +359,12 @@
             
             let totalExp = 0; for(let i = 1; i <= 10; i++) { totalExp += getVal('ex-a' + i); }
             let netBal = (totalCash - openAcc) + totalPay + totalExp;
-            
+
             let payload = {
                 date: document.getElementById('f-date').value, location: document.getElementById('f-location').value,
                 openAccount: openAcc, totalCash: totalCash, otherPayments: totalPay, totalExpenses: totalExp, netBalance: netBal, submittedBy: currentUser
             };
-            
+
             try {
                 await fetch(SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
                 alert("සාර්ථකව Cloud එකට Save විය!");
@@ -389,7 +374,7 @@
             } catch (e) { alert("Error: " + e); }
             document.getElementById('loader').style.display = 'none';
         }
-        
+
         async function loadHistory() {
             document.getElementById('loaderText').innerText = "කරුණාකර රැඳී සිටින්න...";
             document.getElementById('loader').style.display = 'flex';
@@ -412,7 +397,7 @@
             } catch (e) { container.innerHTML = "<p style='color:red;'>Network Error.</p>"; }
             document.getElementById('loader').style.display = 'none';
         }
-        
+
         function viewHistoryRecord(index) {
             let row = globalHistoryData[index]; currentReportDate = row.date.split('T')[0]; 
             let isShort = row.netBalance < 0; let netLabel = isShort ? "Net Shortage (අඩු මුදල)" : "Net Excess (වැඩිපුර මුදල)"; let netCol = isShort ? "#d32f2f" : "#0f5132";
