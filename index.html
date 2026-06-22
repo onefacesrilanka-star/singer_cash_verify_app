@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Singer Daily Cash Verification</title>
+
+    <!-- 🟢 Browser Tab Icon (Favicon) 🟢 -->
+    <link rel="icon" href="https://i.ibb.co/FqzJLZ85/20260527-170407.png" type="image/png">
+    <link rel="apple-touch-icon" href="https://i.ibb.co/FqzJLZ85/20260527-170407.png">
+
+    <!-- 🟢 WhatsApp & Social Media Preview (Open Graph) 🟢 -->
+    <meta property="og:title" content="Singer Daily Cash Verification">
+    <meta property="og:description" content="Daily Cash Verification App by ONE FACE">
+    <meta property="og:image" content="https://i.ibb.co/FqzJLZ85/20260527-170407.png">
+    <meta property="og:type" content="website">
+
+    <!-- 🟢 Web App / Add to Home Screen Setup (PWA) 🟢 -->
+    <meta name="theme-color" content="#d32f2f">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" id="manifest-link">
+
+    <!-- PDF ලබා ගැනීමට html2pdf යළි එකතු කර ඇත -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        body { 
+            margin: 0; 
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif; 
+            background-color: #f4f6f9; 
+            color: #333; 
+            padding-bottom: 50px; 
+            overscroll-behavior-y: contain; 
+            touch-action: pan-y; 
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        * { box-sizing: border-box; }
+        input, textarea { -webkit-user-select: auto; -ms-user-select: auto; user-select: auto; touch-action: manipulation; }
+        .header { background: #d32f2f; color: white; padding: 15px; text-align: center; font-size: 20px; font-weight: bold; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .sub-header { font-size: 12px; font-weight: normal; opacity: 0.9; }
+        #loginScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .login-box { background: #f9f9f9; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 80%; max-width: 350px; text-align: center; }
+        .login-box input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; min-width: 0; }
+        .login-btn { background: #d32f2f; color: white; border: none; padding: 12px; width: 100%; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .login-footer { position: absolute; bottom: 20px; font-size: 10px; color: #888; text-align: center; width: 100%; line-height: 1.5; }
+        .nav-tabs { display: flex; background: white; border-bottom: 2px solid #ddd; width: 100%; }
+        .nav-tab { flex: 1; text-align: center; padding: 12px; font-weight: bold; cursor: pointer; color: #666; }
+        .nav-tab.active { color: #d32f2f; border-bottom: 3px solid #d32f2f; }
+        .view { display: none; padding: 15px; width: 100%; padding-bottom: 50px; }
+        .view.active { display: block; }
+        .section { background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); width: 100%; overflow: hidden; }
+        .section-title { font-size: 16px; font-weight: bold; color: #d32f2f; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .input-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; width: 100%; }
+        .input-row label { font-size: 14px; font-weight: bold; flex: 1; white-space: nowrap; }
+        .input-row input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; text-align: right; font-size: 14px; min-width: 0; width: 100%; }
+        .input-row span { margin: 0 10px; font-weight: bold; }
+        .input-row .val-box { flex: 1; text-align: right; font-weight: bold; color: #0f5132; background: #f0fdf4; padding: 8px; border-radius: 4px; min-width: 0; white-space: nowrap; }
+        #loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 3000; justify-content: center; align-items: center; flex-direction: column; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #d32f2f; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .btn-submit { background: #0f5132; color: white; width: 100%; padding: 15px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; margin-top: 10px; cursor: pointer; }
+        .record-card { background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #d32f2f; width: 100%; cursor: pointer; }
+        .app-footer { text-align: center; font-size: 11px; color: #777; margin: 30px 0 10px 0; line-height: 1.4; border-top: 1px dashed #ccc; padding-top: 15px; width: 100%; }
+        /* Modal Styles */
+        #reportModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 4000; overflow-y: auto; padding: 20px; box-sizing: border-box; }
+        .modal-content { background: #fff; padding: 25px; border-radius: 8px; max-width: 500px; margin: 20px auto; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .close-btn { position: absolute; right: 15px; top: 10px; font-size: 30px; cursor: pointer; color: #d32f2f; font-weight: bold; }
+        .action-buttons { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div id="loginScreen">
+        <div class="login-box">
+            <h2 style="color: #d32f2f; margin-top:0;">SINGER</h2>
+            <p style="font-size:14px; color:#555;">Daily Cash Verification App</p>
+            <input type="text" id="userName" placeholder="ඔබගේ නම (Your Name)">
+            <input type="password" id="userPin" placeholder="PIN එක (Enter PIN)">
+            <button class="login-btn" onclick="login()">System එකට පිවිසෙන්න</button>
+        </div>
+        <div class="login-footer">
+            SYSTEM BY ONE FACE CRATIVE CRAITION<br>076 030 8163
+        </div>
+    </div>
+    
+    <div class="header">
+        SINGER <br>
+        <div class="sub-header" id="headerUser">Location: Kamburupitiya</div>
+    </div>
+    
+    <div class="nav-tabs">
+        <div class="nav-tab active" id="tab-form" onclick="switchTab('form')">📝 අලුත් වාර්තාව</div>
+        <div class="nav-tab" id="tab-history" onclick="switchTab('history'); loadHistory();">📂 පරණ වාර්තා</div>
+    </div>
+    
+    <div id="loader"><div class="spinner"></div><p style="font-weight:bold; margin-top:10px;" id="loaderText">කරුණාකර රැඳී සිටින්න...</p></div>
+    
+    <div id="view-form" class="view active">
+        <div class="section">
+            <div class="input-row"><label>Date (දිනය)</label><input type="date" id="f-date"></div>
+            <div class="input-row"><label>Location</label><input type="text" id="f-location" value="Kamburupitiya"></div>
+            <div class="input-row"><label>Open Account (රු.)</label><input type="text" inputmode="decimal" class="num-input" id="f-openAcc" oninput="formatInput(this); calcAll()" placeholder="e.g. 300,248"></div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">💵 Cash on Hand (මුදල් නෝට්ටු)</div>
+            <div class="input-row"><label>5000</label><span>x</span><input type="text" inputmode="decimal" class="num-input" id="c5000" oninput="formatInput(this); calcAll()"><div class="val-box" id="t5000">0</div></div>
+            <div class="input-row"><label>1000</label><span>x</span><input type="text" inputmode="decimal" class="num-input" id="c1000" oninput="formatInput(this); calcAll()"><div class="val-box" id="t1000">0</div></div>
+            <div class="input-row"><label>500</label><span>x</span><input type="text" inputmode="decimal" class="num-input" id="c500" oninput="formatInput(this); calcAll()"><div class="val-box" id="t500">0</div></div>
+            <div class="input-row"><label>100</label><span>x</span><input type="text" inputmode="decimal" class="num-input" id="c100" oninput="formatInput(this); calcAll()"><div class="val-box" id="t100">0</div></div>
+            <div class="input-row"><label>50</label><span>x</span><input type="text" inputmode="decimal" class="num-input" id="c50" oninput="formatInput(this); calcAll()"><div class="val-box" id="t50">0</div></div>
+            <div class="input-row"><label>20</label><span>x</span><input type="text" inputmode="decimal" class="num-input" id="c20" oninput="formatInput(this); calcAll()"><div class="val-box" id="t20">0</div></div>
+            <div class="input-row"><label>10</label><span>x</span><input type="text" inputmode="decimal" class="num-input" id="c10" oninput="formatInput(this); calcAll()"><div class="val-box" id="t10">0</div></div>
+            <div class="input-row"><label>Coins (කාසි)</label><span>+</span><input type="text" inputmode="decimal" class="num-input" id="cCoins" oninput="formatInput(this); calcAll()"><div class="val-box" id="tCoins">0</div></div>
+            <div class="input-row" style="margin-top:15px; border-top:2px solid #ccc; padding-top:10px;"><label style="color:#d32f2f;">Total Cash (C/Total)</label><div class="val-box" id="totalCashBox" style="font-size:16px;">Rs. 0</div></div>
+        </div>
+        
+        <div class="section" style="background:#fff5f5; border: 1px dashed #d32f2f;">
+            <div class="input-row" style="margin:0;"><label style="color:#d32f2f;">Cash Account Difference</label><div class="val-box" id="cashDiffBox" style="font-size:16px; background:none;">Rs. 0</div></div>
+            <p style="font-size:10px; color:#666; margin:3px 0 0 0; text-align:right;">(Total Cash - Open Account)</p>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">💳 Other Payment Methods</div>
+            <div class="input-row"><label>Bank Slip</label><input type="text" inputmode="decimal" class="num-input" id="o-bank" oninput="formatInput(this); calcAll()"></div>
+            <div class="input-row"><label>Advance (Cheques)</label><input type="text" inputmode="decimal" class="num-input" id="o-adv" oninput="formatInput(this); calcAll()"></div>
+            <div class="input-row"><label>Credit Cards</label><input type="text" inputmode="decimal" class="num-input" id="o-cards" oninput="formatInput(this); calcAll()"></div>
+            <div class="input-row"><label>FS 86 Credits / Vouchers</label><input type="text" inputmode="decimal" class="num-input" id="o-other" oninput="formatInput(this); calcAll()"></div>
+            <div class="input-row" style="margin-top:15px; border-top:2px solid #ccc; padding-top:10px;"><label style="color:#d32f2f;">Total Other Payments</label><div class="val-box" id="totalPayBox" style="font-size:16px;">Rs. 0</div></div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">📉 Expenses (වියදම් කොටු 10)</div>
+            <div class="input-row"><input type="text" id="ex-r1" placeholder="Reason 1" style="flex:1.5; margin-right:5px; text-align:left;"><input type="text" inputmode="decimal" class="num-input" id="ex-a1" oninput="formatInput(this); calcAll()" placeholder="Amount"></div>
+            <div class="input-row"><input type="text" id="ex-r2" placeholder="Reason 2" style="flex:1.5; margin-right:5px; text-align:left;"><input type="text" inputmode="decimal" class="num-input" id="ex-a2" oninput="formatInput(this); calcAll()" placeholder="Amount"></div>
+            <div class="input-row"><input type="text" id="ex-r3" placeholder="Reason 3" style="flex:1.5; margin-right:5px; text-align:left;"><input type="text" inputmode="decimal" class="num-input" id="ex-a3" oninput="formatInput(this); calcAll()" placeholder="Amount"></div>
+            <div class="input-row"><input type="text" id="ex-r4" placeholder="Reason 4" style="flex:1.5; margin-right:5px; text-align:left;"><input type="text" inputmode="decimal" class="num-input" id="ex-a4" oninput="formatInput(this); calcAll()" placeholder="Amount"></div>
+            <div class="input-row"><input type="text" id="ex-r5" placeholder="Reason 5" style="flex:1.5; margin-right:5px; text-align:left;"><input type="text" inputmode="decimal" class="num-input" id="ex-a5" oninput="formatInput(this); calcAll()" placeholder="Amount"></div>
+            <div class="input-row"><input type="text" id="ex-r6" placeholder="Reason 6" style="flex:1.5; margin-right:5px; text-align:left;"><input type="text" inputmode="decimal" class="num-input" id="ex-a6" oninput="formatInput(this); calcAll()" placeholder="Amount"></div>
+            <div class="input-row"><input type="text" id="ex-r7" placeholder="Reason 7" style="flex:1.5; margin-right:5px; text-align:left;"><input type="text" inputmode="decimal" class="num-input" id="ex-a7" oninput="formatInput(this); calcAll()" placeholder="Amount"></div>
+            <div class="input-row"><input type="text" id="ex-r8" placeholder="Reason 8" style="flex:1.5; margin-right:5px; text-align:left;"><input type="text" inputmode="decimal" class="num-input" id="ex-a8" oninput="formatInput(this); calcAll()" placeholder="Amount"></div>
+            <div class="input-row"><input type="text" id="ex-r9" placeholder="Reason 9" style="flex:1.5; margin-right:5px; text-align:left;"><input type="text" inputmode="decimal" class="num-input" id="ex-a9" oninput="formatInput(this); calcAll()" placeholder="Amount"></div>
+            <div class="input-row"><input type="text" id="ex-r10" placeholder="Reason 10" style="flex:1.5; margin-right:5px; text-align:left;"><input type="text" inputmode="decimal" class="num-input" id="ex-a10" oninput="formatInput(this); calcAll()" placeholder="Amount"></div>
+            <div class="input-row" style="margin-top:15px; border-top:2px solid #ccc; padding-top:10px;"><label style="color:#d32f2f; font-weight:bold;">Total Expenses</label><div class="val-box" id="totalExpBox" style="font-size:16px;">Rs. 0</div></div>
+        </div>
+        
+        <div class="section" style="background:#e3f2fd; border: 2px solid #1976d2;">
+            <div class="input-row" style="margin:0;"><label style="font-size:18px; font-weight:bold;" id="netLabel">Net Shortage/Excess</label><div class="val-box" id="netBalanceBox" style="font-size:22px; color:#1976d2; background:none;">Rs. 0</div></div>
+        </div>
+        
+        <button class="btn-submit" onclick="submitData()">☁️ Cloud එකට Save කරන්න</button>
+        <button class="btn-submit" style="background:#1976d2; margin-top:8px;" onclick="printForm()">📄 View Report / Save PDF</button>
+        
+        <div class="app-footer">
+            All rights received by ONE FACE crative caration- Hasitha 2020-2026
+        </div>
+    </div>
+    
+    <div id="view-history" class="view">
+        <h3 style="color:#d32f2f; margin-top:0;">Save කරපු වාර්තා (Click to view)</h3>
+        <div id="historyContainer"></div>
+        <div class="app-footer">
+            All rights received by ONE FACE crative caration - Hasitha 2020-2026
+        </div>
+    </div>
+    
+    <!-- Modal for Print Preview / History Details -->
+    <div id="reportModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('reportModal').style.display='none'">&times;</span>
+            <div id="reportContent" style="padding: 10px; background: #fff;">
+                <!-- Content will be injected here -->
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn-submit" style="background:#0f5132; margin-top:0;" onclick="downloadPDF()">⬇️ Download PDF</button>
+            </div>
+            
+            <p style="font-size:12px; text-align:center; color:#666; margin-top:15px; font-weight:bold;">
+                (Download වූ පසු ඔබගේ දුරකථනයේ 'Downloads' Folder එක පරීක්ෂා කරන්න)
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        // 🟢 Dynamic PWA Manifest Injection (Add to Home Screen Setup) 🟢
+        const manifestData = {
+            "name": "Singer Cash App",
+            "short_name": "Singer Cash",
+            "start_url": ".",
+            "display": "standalone",
+            "background_color": "#f4f6f9",
+            "theme_color": "#d32f2f",
+            "icons": [
+                { "src": "https://i.ibb.co/FqzJLZ85/20260527-170407.png", "sizes": "192x192", "type": "image/png" },
+                { "src": "https://i.ibb.co/FqzJLZ85/20260527-170407.png", "sizes": "512x512", "type": "image/png" }
+            ]
+        };
+        const manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/json' });
+        document.getElementById('manifest-link').href = URL.createObjectURL(manifestBlob);
+
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzX5tyg_nNBS3NtEU-v3zeJAUZcRVacD3nfDk1a68vTjq5uBJu39BoFP5ops8ZhOFzR/exec"; 
+        let currentUser = ""; let isAdmin = false;
+        let globalHistoryData = []; 
+        let currentReportDate = "";
+        
+        document.getElementById('f-date').valueAsDate = new Date();
+        
+        function login() {
+            let name = document.getElementById('userName').value.trim();
+            let pin = document.getElementById('userPin').value.trim();
+            if(name === "") return alert("කරුණාකර ඔබගේ නම ඇතුළත් කරන්න.");
+            currentUser = name; isAdmin = (pin === "1234");
+            document.getElementById('headerUser').innerText = `Location: Kamburupitiya | User: ${currentUser} ${isAdmin ? '(Admin)' : ''}`;
+            document.getElementById('loginScreen').style.display = "none";
+        }
+        
+        function switchTab(tab) {
+            document.getElementById('view-form').classList.remove('active'); document.getElementById('view-history').classList.remove('active');
+            document.getElementById('tab-form').classList.remove('active'); document.getElementById('tab-history').classList.remove('active');
+            document.getElementById('view-' + tab).classList.add('active'); document.getElementById('tab-' + tab).classList.add('active');
+        }
+        
+        function formatInput(input) {
+            let rawValue = input.value.replace(/[^0-9.]/g, '');
+            if(rawValue === "") { input.value = ""; return; }
+            let parts = rawValue.split('.');
+            let intPart = parts[0];
+            if(intPart !== "") { intPart = parseInt(intPart, 10).toLocaleString('en-US'); }
+            if(parts.length > 1) { input.value = intPart + '.' + parts[1]; } else { input.value = intPart; }
+        }
+        
+        function getVal(id) { 
+            let el = document.getElementById(id); if(!el) return 0;
+            let valStr = el.value.replace(/,/g, ''); let num = parseFloat(valStr); return isNaN(num) ? 0 : num;
+        }
+        
+        function formatNum(num) {
+            let val = Number(num); if(isNaN(val)) return "0.00";
+            return val.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        }
+        
+        function calcAll() {
+            let c5000 = getVal('c5000')*5000; document.getElementById('t5000').innerText = c5000.toLocaleString();
+            let c1000 = getVal('c1000')*1000; document.getElementById('t1000').innerText = c1000.toLocaleString();
+            let c500 = getVal('c500')*500; document.getElementById('t500').innerText = c500.toLocaleString();
+            let c100 = getVal('c100')*100; document.getElementById('t100').innerText = c100.toLocaleString();
+            let c50 = getVal('c50')*50; document.getElementById('t50').innerText = c50.toLocaleString();
+            let c20 = getVal('c20')*20; document.getElementById('t20').innerText = c20.toLocaleString();
+            let c10 = getVal('c10')*10; document.getElementById('t10').innerText = c10.toLocaleString();
+            let coins = getVal('cCoins'); document.getElementById('tCoins').innerText = coins.toLocaleString();
+            
+            let totalCash = c5000 + c1000 + c500 + c100 + c50 + c20 + c10 + coins;
+            document.getElementById('totalCashBox').innerText = "Rs. " + totalCash.toLocaleString();
+            
+            let openAcc = getVal('f-openAcc'); let cashDiff = totalCash - openAcc;
+            let diffBox = document.getElementById('cashDiffBox');
+            diffBox.innerText = "Rs. " + cashDiff.toLocaleString();
+            diffBox.style.color = cashDiff < 0 ? "#d32f2f" : "#0f5132";
+            
+            let totalPayments = getVal('o-bank') + getVal('o-adv') + getVal('o-cards') + getVal('o-other');
+            document.getElementById('totalPayBox').innerText = "Rs. " + totalPayments.toLocaleString();
+            
+            let totalExpenses = 0; for(let i = 1; i <= 10; i++) { totalExpenses += getVal('ex-a' + i); }
+            document.getElementById('totalExpBox').innerText = "Rs. " + totalExpenses.toLocaleString();
+            
+            let netBalance = (cashDiff + totalPayments) + totalExpenses;
+            let netBox = document.getElementById('netBalanceBox'); let labelBox = document.getElementById('netLabel');
+            
+            if (netBalance < 0) {
+                labelBox.innerText = "Net Shortage (අඩු මුදල)"; netBox.innerText = "Rs. " + Math.abs(netBalance).toLocaleString(); netBox.style.color = "#d32f2f";
+            } else {
+                labelBox.innerText = "Net Excess (වැඩිපුර මුදල)"; netBox.innerText = "Rs. " + netBalance.toLocaleString(); netBox.style.color = "#0f5132";
+            }
+        }
+        
+        function printForm() {
+            let date = document.getElementById('f-date').value; currentReportDate = date; 
+            let location = document.getElementById('f-location').value; let openAcc = getVal('f-openAcc');
+            let cashDiff = (getVal('c5000')*5000 + getVal('c1000')*1000 + getVal('c500')*500 + getVal('c100')*100 + getVal('c50')*50 + getVal('c20')*20 + getVal('c10')*10 + getVal('cCoins')) - openAcc;
+            let netText = document.getElementById('netBalanceBox').innerText; let netLabelText = document.getElementById('netLabel').innerText;
+            
+            let expRowsHtml = "";
+            for(let i=1; i<=10; i++) {
+                let r = document.getElementById('ex-r' + i).value || ""; let a = document.getElementById('ex-a' + i).value ? "Rs. " + getVal('ex-a' + i).toLocaleString() : "";
+                if(r || a) { expRowsHtml += `<tr><td style="border:1px solid #000; padding:5px; text-align:left;">${r}</td><td style="border:1px solid #000; padding:5px; text-align:right;">${a}</td></tr>`; }
+            }
+            
+            let htmlContent = `
+                <div style="font-family: 'Courier New', monospace; font-size: 14px; color:#000; background: #fff; padding: 5px;">
+                    <div style="text-align:right; font-weight:bold; font-size:22px; margin:0; letter-spacing:2px;">SINGER</div>
+                    <div style="text-align:center; font-weight:bold; font-size:18px; margin:0;">Daily Cash Verification</div><br>
+                    <table style="width:100%;"><tr><td>Location: <b>${location}</b></td><td style="text-align:right;">Date: <b>${date}</b></td></tr></table><br>
+                    <div>Open Account - Current Week: <span style="float:right; font-weight:bold;">Rs. ${openAcc.toLocaleString()}/=</span></div><br>
+                    <div style="font-weight:bold; margin-top:10px;">Cash on hand:</div>
+                    <table style="width: 100%; margin-top: 5px; border-collapse: collapse;">
+                        <tr><td style="border:1px solid #000; padding:4px;">5000 x ${getVal('c5000')} =</td><td style="border:1px solid #000; padding:4px; text-align:right;">Rs. ${(getVal('c5000')*5000).toLocaleString()}</td></tr>
+                        <tr><td style="border:1px solid #000; padding:4px;">1000 x ${getVal('c1000')} =</td><td style="border:1px solid #000; padding:4px; text-align:right;">Rs. ${(getVal('c1000')*1000).toLocaleString()}</td></tr>
+                        <tr><td style="border:1px solid #000; padding:4px;">500 x ${getVal('c500')} =</td><td style="border:1px solid #000; padding:4px; text-align:right;">Rs. ${(getVal('c500')*500).toLocaleString()}</td></tr>
+                        <tr><td style="border:1px solid #000; padding:4px;">100 x ${getVal('c100')} =</td><td style="border:1px solid #000; padding:4px; text-align:right;">Rs. ${(getVal('c100')*100).toLocaleString()}</td></tr>
+                        <tr><td style="border:1px solid #000; padding:4px;">50 x ${getVal('c50')} =</td><td style="border:1px solid #000; padding:4px; text-align:right;">Rs. ${(getVal('c50')*50).toLocaleString()}</td></tr>
+                        <tr><td style="border:1px solid #000; padding:4px;">20 x ${getVal('c20')} =</td><td style="border:1px solid #000; padding:4px; text-align:right;">Rs. ${(getVal('c20')*20).toLocaleString()}</td></tr>
+                        <tr><td style="border:1px solid #000; padding:4px;">10 x ${getVal('c10')} =</td><td style="border:1px solid #000; padding:4px; text-align:right;">Rs. ${(getVal('c10')*10).toLocaleString()}</td></tr>
+                        <tr><td style="border:1px solid #000; padding:4px;">Coins =</td><td style="border:1px solid #000; padding:4px; text-align:right;">Rs. ${getVal('cCoins').toLocaleString()}</td></tr>
+                        <tr style="font-weight:bold; background:#eee;"><td style="border:1px solid #000; padding:4px;">C/Total:</td><td style="border:1px solid #000; padding:4px; text-align:right;">Rs. ${document.getElementById('totalCashBox').innerText.replace('Rs. ','')}</td></tr>
+                    </table><br>
+                    <table style="width:100%; border-collapse:collapse; margin-top:5px;">
+                        <tr><td style="font-weight:bold;">Other Payment Methods:</td><td></td></tr>
+                        <tr><td> - Bank Slip:</td><td style="text-align:right;">Rs. ${getVal('o-bank').toLocaleString()}</td></tr>
+                        <tr><td> - Cheques: Advance</td><td style="text-align:right;">Rs. ${getVal('o-adv').toLocaleString()}</td></tr>
+                        <tr><td> - Credit Cards:</td><td style="text-align:right;">Rs. ${getVal('o-cards').toLocaleString()}</td></tr>
+                        <tr><td> - FS 86 Credits / Vouchers:</td><td style="text-align:right;">Rs. ${getVal('o-other').toLocaleString()}</td></tr>
+                        <tr style="font-weight:bold;"><td>Total Account Balance (Diff):</td><td style="text-align:right; border-top:1px solid #000;">Rs. ${cashDiff.toLocaleString()}/=</td></tr>
+                    </table><br>
+                    <div style="font-weight:bold; margin-bottom:5px;">Expenses (වියදම්):</div>
+                    <table style="width:100%; border-collapse:collapse;">
+                        <thead><tr style="background:#eee;"><th style="border:1px solid #000; padding:5px; text-align:left;">Reason</th><th style="border:1px solid #000; padding:5px; text-align:right;">Amount</th></tr></thead>
+                        <tbody>${expRowsHtml}<tr style="font-weight:bold; background:#eee;"><td style="border:1px solid #000; padding:5px; text-align:left;">Total Expenses:</td><td style="border:1px solid #000; padding:5px; text-align:right;">${document.getElementById('totalExpBox').innerText}</td></tr></tbody>
+                    </table><br><br>
+                    <div style="border:2px solid #000; padding:10px; font-size:16px; font-weight:bold; text-align:center; background:#eee;">${netLabelText}: ${netText}</div><br>
+                    <table style="width:100%; margin-top:20px;"><tr><td style="text-align:center;">........................<br>Prepared By (${currentUser})</td><td style="text-align:center;">........................<br>Verified By (Manager)</td></tr></table>
+                </div>`;
+            document.getElementById('reportContent').innerHTML = htmlContent;
+            document.getElementById('reportModal').style.display = 'block';
+        }
+        
+        // 🚀 Blob URL Download Approach for WebViews
+        function downloadPDF() {
+            document.getElementById('loaderText').innerText = "PDF සකස් කරමින් පවතී...";
+            document.getElementById('loader').style.display = 'flex';
+            
+            const htmlString = document.getElementById('reportContent').innerHTML;
+            let dynamicFileName = 'Singer_Cash_Report_' + currentReportDate + '.pdf';
+            
+            const opt = {
+                margin:       12,
+                filename:     dynamicFileName,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            html2pdf().set(opt).from(htmlString).outputPdf('blob').then(function(pdfBlob) {
+                const blobUrl = URL.createObjectURL(pdfBlob);
+                const link = document.createElement('a');
+                link.href = blobUrl;
+                link.download = dynamicFileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+                
+                document.getElementById('loader').style.display = 'none';
+                alert("PDF එක සාර්ථකව Download විය! කරුණාකර ෆෝන් එකේ Downloads Folder එක පරීක්ෂා කරන්න.");
+            }).catch(e => {
+                document.getElementById('loader').style.display = 'none';
+                alert("Download Error: කරුණාකර ඇප් එකට Storage Permission ලබා දී ඇතිදැයි පරීක්ෂා කරන්න.");
+            });
+        }
+        
+        async function submitData() {
+            if(!confirm("වාර්තාව Cloud එකට Save කරන්නද?")) return;
+            document.getElementById('loaderText').innerText = "කරුණාකර රැඳී සිටින්න...";
+            document.getElementById('loader').style.display = 'flex';
+            
+            let openAcc = getVal('f-openAcc');
+            let totalCash = (getVal('c5000')*5000) + (getVal('c1000')*1000) + (getVal('c500')*500) + (getVal('c100')*100) + (getVal('c50')*50) + (getVal('c20')*20) + (getVal('c10')*10) + getVal('cCoins');
+            let totalPay = getVal('o-bank') + getVal('o-adv') + getVal('o-cards') + getVal('o-other');
+            
+            let totalExp = 0; for(let i = 1; i <= 10; i++) { totalExp += getVal('ex-a' + i); }
+            let netBal = (totalCash - openAcc) + totalPay + totalExp;
+            
+            let payload = {
+                date: document.getElementById('f-date').value, location: document.getElementById('f-location').value,
+                openAccount: openAcc, totalCash: totalCash, otherPayments: totalPay, totalExpenses: totalExp, netBalance: netBal, submittedBy: currentUser
+            };
+            
+            try {
+                await fetch(SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
+                alert("සාර්ථකව Cloud එකට Save විය!");
+                document.querySelectorAll('.num-input').forEach(i => i.value = "");
+                document.querySelectorAll('input[type="text"]:not(.num-input)').forEach(i => { if(i.id !== 'f-location' && i.id !== 'userName') i.value = ""; });
+                calcAll();
+            } catch (e) { alert("Error: " + e); }
+            document.getElementById('loader').style.display = 'none';
+        }
+        
+        async function loadHistory() {
+            document.getElementById('loaderText').innerText = "කරුණාකර රැඳී සිටින්න...";
+            document.getElementById('loader').style.display = 'flex';
+            let container = document.getElementById('historyContainer'); container.innerHTML = "";
+            try {
+                let res = await fetch(SCRIPT_URL); let data = await res.json();
+                if(data.length === 0) { container.innerHTML = "<p>පරණ වාර්තා නොමැත.</p>"; } 
+                else {
+                    globalHistoryData = data.reverse(); 
+                    globalHistoryData.forEach((row, index) => {
+                        let isShort = row.netBalance < 0; let cashFormatted = formatNum(row.totalCash); let netFormatted = formatNum(Math.abs(row.netBalance));
+                        let card = `<div class="record-card" style="border-left: 4px solid ${isShort ? '#d32f2f' : '#0f5132'}" onclick="viewHistoryRecord(${index})">
+                            <div style="font-size:12px; color:#888;">📅 ${row.date.split('T')[0]} | 👤 By: ${row.submittedBy}</div>
+                            <div style="font-weight:bold; font-size:15px; margin:5px 0;">Total Cash: Rs. ${cashFormatted}</div>
+                            <div style="font-size:13px; color:#555;">Status: <b style="color:${isShort ? 'red' : 'green'}">${isShort ? 'Shortage' : 'Excess'}: Rs. ${netFormatted}</b></div>
+                            <div style="font-size:11px; color:#0056b3; margin-top:5px; text-align:right;">👆 Click to view Details</div></div>`;
+                        container.innerHTML += card;
+                    });
+                }
+            } catch (e) { container.innerHTML = "<p style='color:red;'>Network Error.</p>"; }
+            document.getElementById('loader').style.display = 'none';
+        }
+        
+        function viewHistoryRecord(index) {
+            let row = globalHistoryData[index]; currentReportDate = row.date.split('T')[0]; 
+            let isShort = row.netBalance < 0; let netLabel = isShort ? "Net Shortage (අඩු මුදල)" : "Net Excess (වැඩිපුර මුදල)"; let netCol = isShort ? "#d32f2f" : "#0f5132";
+            let html = `
+                <div style="font-family: 'Segoe UI', sans-serif; font-size: 15px; color:#333; background: #fff; padding: 5px;">
+                    <div style="text-align:center; font-weight:bold; font-size:20px; color:#d32f2f;">SINGER</div>
+                    <div style="text-align:center; font-weight:bold; font-size:16px; margin-bottom:15px; color:#555;">Daily Cash Summary (Saved)</div>
+                    <table style="width:100%; border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:10px;">
+                        <tr><td><b>Date:</b></td><td style="text-align:right;">${currentReportDate}</td></tr><tr><td><b>Location:</b></td><td style="text-align:right;">${row.location}</td></tr><tr><td><b>Prepared By:</b></td><td style="text-align:right;">${row.submittedBy}</td></tr>
+                    </table>
+                    <table style="width:100%; line-height:1.8;">
+                        <tr><td>Open Account:</td><td style="text-align:right;">Rs. ${formatNum(row.openAccount)}</td></tr><tr style="background:#f0fdf4;"><td><b>Total Cash:</b></td><td style="text-align:right; font-weight:bold;">Rs. ${formatNum(row.totalCash)}</td></tr><tr><td>Other Payments:</td><td style="text-align:right;">Rs. ${formatNum(row.otherPayments)}</td></tr><tr><td>Total Expenses:</td><td style="text-align:right;">Rs. ${formatNum(row.totalExpenses)}</td></tr>
+                    </table>
+                    <div style="text-align:center; font-size:18px; font-weight:bold; color:${netCol}; margin-top:20px; padding:15px; background:${isShort ? '#fff5f5' : '#e3f2fd'}; border-radius:8px; border:2px solid ${netCol};">${netLabel}<br>Rs. ${formatNum(Math.abs(row.netBalance))}</div>
+                </div>`;
+            document.getElementById('reportContent').innerHTML = html;
+            document.getElementById('reportModal').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
